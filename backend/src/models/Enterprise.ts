@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose,{ Schema } from 'mongoose'
 
 const validatePAN = (PAN : String) => {
     return PAN.length == 10;
@@ -69,6 +69,11 @@ const EnterpriseSchema = new mongoose.Schema({
         required : true,
         validate : validateType
     },
+    Orders : [{
+        type : Schema.Types.ObjectId,
+        ref : "OrderRequest",
+        required : true
+    }]
 });
 
 export default mongoose.model('Enterprise', EnterpriseSchema);
