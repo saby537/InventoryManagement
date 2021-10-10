@@ -3,17 +3,21 @@ import Warehouse from '../models/Warehouse';
 
 const router=express.Router();
 
-interface Warehouses {
+interface WarehousesPost {
     body : {
-        Name : String,
-        Unit : String,
-        Type : String,
-        SubType : String,
-        Quantity : String,
+        Address : String,
+        City : String,
     }
 }
 
-router.post("/",async (request : Warehouses,response : any) =>  {
+interface WarehousesGetByCity {
+    body : {
+        Address : String,
+        City : String,
+    }
+}
+
+router.post("/",async (request : WarehousesPost,response : any) =>  {
     try {
         let mewWarehouse = new Warehouse(request.body);
         let validationFail = mewWarehouse.validateSync()
@@ -23,6 +27,26 @@ router.post("/",async (request : Warehouses,response : any) =>  {
         }else{response.send(validationFail)}   
     } catch (error) {
         response.status(500).send("Some error happened")
+    }
+})
+
+router.get("/",async (request : any,response : any) =>  {
+    try {
+        let finder = await Warehouse.find();
+        response.send(finder);
+    } catch (error) {
+        response.status(500).send(error)
+    }
+})
+
+router.get("/city/",async (request : WarehousesGetByCity,response : any) =>  {
+    try {
+        let finder = await Warehouse.find({
+            City : request.body.City
+        });
+        response.send(finder);
+    } catch (error) {
+        response.status(500).send(error)
     }
 })
 

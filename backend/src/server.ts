@@ -8,6 +8,8 @@ import dotenv from 'dotenv';
 import Enterprise from './routes/Enterprise';
 import Item from './routes/Items';
 import Warehouse from './routes/Warehouse';
+import AddStock from './routes/AddStock';
+import OrderRequest from './routes/OrderRequest';
 
 const router=express.Router();
 const app=express();
@@ -22,6 +24,8 @@ app.use(cors())
 app.use("/api/enterprise/",Enterprise);
 app.use("/api/item/",Item);
 app.use("/api/warehouse/",Warehouse);
+app.use("/api/addStock/",AddStock);
+app.use("/api/orderRequest/",OrderRequest);
 
 /**-------- Paths ------------------- */
 

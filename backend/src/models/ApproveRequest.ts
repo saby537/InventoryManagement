@@ -4,8 +4,8 @@ const validateUnit = (Type : String) => {
     return Type.toUpperCase() === "NOS" || Type.toUpperCase() === "METRE" || Type.toUpperCase() === "KG"; 
 }
 
-const isNumeric = (Num : String) => {
-    return !isNaN(Number(Num));
+const isNumeric = (Num : any) => {
+    return !isNaN(Num);
 }
 
 const ApproveRequestSchema = new mongoose.Schema({
@@ -20,7 +20,7 @@ const ApproveRequestSchema = new mongoose.Schema({
         validate : [ validateUnit , "It should be either `nos` , `metre` or `kg`" ]
     },
     Quantity : {
-        type : String,
+        type : Number,
         required : true,
         validate : [ isNumeric ,"Quantity should be a numeric value" ]
     },
@@ -58,7 +58,7 @@ const ApproveRequestSchema = new mongoose.Schema({
     ApproverID : {
         type : Schema.Types.ObjectId,
         ref : "Enterprise",
-        required : true
+        required : false
     }
 });
 

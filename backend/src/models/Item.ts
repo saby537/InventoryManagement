@@ -4,8 +4,8 @@ const validateUnit = (Type : String) => {
     return Type.toUpperCase() === "NOS" || Type.toUpperCase() === "METRE" || Type.toUpperCase() === "KG"; 
 }
 
-const isNumeric = (Num : String) => {
-    return !isNaN(Number(Num));
+const isNumeric = (Num : any) => {
+    return !isNaN(Num);
 }
 
 const ItemSchema = new mongoose.Schema({
@@ -27,9 +27,9 @@ const ItemSchema = new mongoose.Schema({
         required : true
     },
     Quantity : {
-        type : String,
+        type : Number,
         required : true,
-        validate : [ isNumeric ,"Quantity should be a numeric value" ]
+        validate : [ isNumeric , "It should be a number" ]
     }
 });
 

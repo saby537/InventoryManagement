@@ -20,10 +20,9 @@ const validateType = (Type : String) => {
     return Type.toUpperCase() === "SUPPLIER" || Type.toUpperCase() === "CONTRACTOR" || Type.toUpperCase() === "BUYER"; 
 }
 
-const isNumeric = (Num : String) => {
-    return !isNaN(Number(Num));
+const isNumeric = (Num : any) => {
+    return !isNaN(Num);
 }
-
 
 const EnterpriseSchema = new mongoose.Schema({
     Name : {
