@@ -10,6 +10,7 @@ import Item from './routes/Items';
 import Warehouse from './routes/Warehouse';
 import AddStock from './routes/AddStock';
 import OrderRequest from './routes/OrderRequest';
+import ApproveRequest from './routes/ApproveRequest';
 
 const router=express.Router();
 const app=express();
@@ -26,6 +27,7 @@ app.use("/api/item/",Item);
 app.use("/api/warehouse/",Warehouse);
 app.use("/api/addStock/",AddStock);
 app.use("/api/orderRequest/",OrderRequest);
+app.use("/api/approveRequest/",ApproveRequest);
 
 /**-------- Paths ------------------- */
 

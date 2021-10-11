@@ -70,7 +70,7 @@ const EnterpriseSchema = new mongoose.Schema({
     },
     Orders : [{
         type : Schema.Types.ObjectId,
-        ref : "OrderRequest",
+        ref : "ApproveRequest",
         required : true
     }]
 });
