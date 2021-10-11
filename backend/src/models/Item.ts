@@ -15,8 +15,9 @@ const ItemSchema = new mongoose.Schema({
     },
     Unit : {
         type : String,
-        required : true,
-        validate : [ validateUnit , "It should be either `nos` , `metre` or `kg`" ]
+        require : true,
+        enum : ['nos','metre','kg'],
+        default: 'nos'
     },
     Type : {
         type : String,

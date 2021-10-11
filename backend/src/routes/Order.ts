@@ -1,14 +1,11 @@
 import express from 'express'
 import mongoose from 'mongoose';
-import AddStock from '../models/AddStock';
 import Enterprise from '../models/Enterprise';
-import OrderRequest from '../models/OrderRequest';
-import ApproveRequest from '../models/ApproveRequest';
-import Item from '../models/Item'
+import Order from '../models/Order';
 
 const router=express.Router();
 
-interface OrderRequestPost {
+interface OrderPost {
     body : {
         _id? : any,
         ProductName : string,
@@ -19,10 +16,26 @@ interface OrderRequestPost {
         Contractor : string,
         Invoice : String,
         DeliveryLocation : String,
-        Warehouse : string
+        Warehouse : string,
     },
     headers : {
         email : String
+    }
+}
+
+interface OrderPostByWarehouse {
+    body : {
+        ProductName : string,
+        Unit : String,
+        Quantity : Number,
+        AvailableStock : String,
+        Comments : String,
+        ApproveStatus : String,
+        Contractor : string,
+        Invoice : String,
+        DeliveryLocation : String
+        Warehouse : string,
+        ApproverID : string
     }
 }
 
@@ -35,30 +48,24 @@ interface EnterpriseGetByInvoice {
     }
 }
 
-router.post("/",async (request : OrderRequestPost,response : any) =>  {
+router.post("/",async (request : OrderPost,response : any) =>  {
     try {
         let data = {
             ...request.body,
-            _id : new mongoose.Types.ObjectId()
+            _id : new mongoose.Types.ObjectId(),
+            ApproveStatus : 'no',
+            Comments : []
         }
-        let newOrderRequest = new OrderRequest(data)
-        let validationFail = newOrderRequest.validateSync()
+        
+        let newOrder = new Order(data)
+        let validationFail = newOrder.validateSync()
         if(!validationFail){
             Enterprise.findOne({
                 EmailID : request.headers.email
             },async function(err : any , enterprise : any){
                 if( ! err ) {
-                    let item = await Item.findOne({Name : request.body.ProductNameString })
                     enterprise.Orders.push(data._id)
-                    let newApproveRequest = new ApproveRequest({
-                        ...request.body,
-                        AvailableStock : item.Quantity,
-                        Comments : [],
-                        ApproveStatus : "NO",
-                    })
-
-                    newApproveRequest.save();
-                    newOrderRequest.save();   
+                    newOrder.save();   
                     enterprise.save();
                     response.send("New Order Request added")     
 
@@ -72,10 +79,26 @@ router.post("/",async (request : OrderRequestPost,response : any) =>  {
     }
 })
 
+router.post("/warehouse/",async (request : OrderPostByWarehouse,response : any) =>  {
+    try {
+        Order.findOne({
+            Invoice : request.body.Invoice
+        },async function(err :any , order : any){
+            order.ApprovedStatus = request.body.ApproveStatus;
+            order.ApproverID = request.body.ApproverID;
+            order.Comments.push(request.body.Comments);
+            order.save();
+        })   
+        response.send("Request Approval Updated");
+    } catch (error) {
+        response.status(500).send({"Error" : error})
+    }
+})
+
 router.get("/",async (request : any,response : any) =>  {
     try {
-        OrderRequest.find()
-        .populate(["ProductName","Supplier","Warehouse","Contractor"])
+        Order.find({ApproveStatus : 'no',})
+        .populate(["ProductName","Supplier","Contractor","Warehouse","ApproverID"])
         .exec(function(err : any,stock : any){
             response.send(stock);
         })
@@ -86,8 +109,8 @@ router.get("/",async (request : any,response : any) =>  {
 
 router.get("/invoice/",async (request : EnterpriseGetByInvoice,response : any) =>  {
     try {
-        AddStock.find({Invoice : request.body.Invoice})
-        .populate(["ProductName","Supplier","Warehouse","User"])
+        Order.find({Invoice : request.body.Invoice})
+        .populate(["ProductName","Supplier","Contractor","Warehouse","ApproverID"])
         .exec(function(err : any,stock : any){
             response.send(stock);
         })

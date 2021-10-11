@@ -8,7 +8,7 @@ const isNumeric = (Num : any) => {
     return !isNaN(Num);
 }
 
-const OrderRequestSchema = new mongoose.Schema({
+const OrderSchema = new mongoose.Schema({
     ProductName : {
         type : Schema.Types.ObjectId,
         ref : "Item",
@@ -16,8 +16,8 @@ const OrderRequestSchema = new mongoose.Schema({
     },
     Unit : {
         type : String,
-        required : true,
-        validate : [ validateUnit , "It should be either `nos` , `metre` or `kg`" ]
+        enum : ['nos','metre','kg'],
+        default: 'nos'
     },
     Quantity : {
         type : Number,
@@ -46,7 +46,22 @@ const OrderRequestSchema = new mongoose.Schema({
         type : Schema.Types.ObjectId,
         ref : "Warehouse",
         required : true
-    }
+    },
+    ApproveStatus : {
+        type : String,
+        required : true,
+        enum : ['no','yes'],
+        default : 'no'
+    },
+    ApproverID : {
+        type : Schema.Types.ObjectId,
+        ref : "Enterprise",
+        required : false
+    },
+    Comments : [{
+        type : String,
+        required : true,
+    }],
 });
 
-export default mongoose.model('OrderRequest', OrderRequestSchema);
+export default mongoose.model('Order', OrderSchema);
