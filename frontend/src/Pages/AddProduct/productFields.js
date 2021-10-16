@@ -4,19 +4,37 @@ const unitOptions = ['Nos', 'Kg', 'Metre'];
 
 const productFields = {
 	fields: {
-		name: {
+		Invoice: {
 			value: '',
 			isValid: false,
 		},
-		type: {
+		Warehouse: {
 			value: '',
 			isValid: false,
 		},
-		subType: {
+		Supplier: {
 			value: '',
 			isValid: false,
 		},
-		unit: {
+		User: {
+			value: '',
+			isValid: false
+		}
+	},
+	isValid: false,
+};
+
+const productDetailsFields = {
+	fields: {
+		ProductName: {
+			value: '',
+			isValid: false,
+		},
+		Quantity: {
+			value: '',
+			isValid: false,
+		},
+		Units: {
 			value: '',
 			isValid: false,
 		},
@@ -24,4 +42,4 @@ const productFields = {
 	isValid: false,
 };
 
-export { productFields, typeOptions, subTypeOptions, unitOptions };
+export { productDetailsFields , productFields, typeOptions, subTypeOptions, unitOptions };

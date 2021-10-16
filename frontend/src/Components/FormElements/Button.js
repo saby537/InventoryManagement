@@ -49,6 +49,7 @@ const Button = (props) => {
 				borderColor: `${
 					props.color && !props.disabled ? props.color : defaultColor
 				}`,
+				borderRadius : "10px"
 			}}
 			className={`button button--${props.size || 'default'} ${
 				props.inverse && 'button--inverse'

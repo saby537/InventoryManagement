@@ -4,7 +4,7 @@ import './OptionTab.css';
 
 const OptionTab = () => {
 	return (
-		<div className="section optionTab-section">
+		<div className="section optionTab-section" style={{display:"flex", justifyContent:"center",gap:"10px",flexWrap: "wrap"}}>
 			<Button color="green" to="/addProduct">
 				Add Product
 			</Button>
