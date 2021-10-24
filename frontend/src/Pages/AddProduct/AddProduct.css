@@ -8,7 +8,6 @@
 	padding : 10px;
 }
 
-
 .addProduct-form {
 	display: flex;
 	flex-direction: column;
@@ -31,3 +30,17 @@
 	display: flex;
 	justify-content: center;
 }
+
+@media (min-width : 1024px){
+	
+	.StockShow{
+		display: grid;
+		grid-template-columns: 5fr 5fr;
+	}
+/* 
+	.StockList{
+		display: grid;
+		grid-template-columns: 4fr 2fr 2fr 2fr;
+	} */
+}
+

@@ -11,6 +11,7 @@ import {
 	subTypeOptions,
 	unitOptions,
 } from './productFields';
+import MaterialTable from "material-table";
 
 import { Form } from 'react-bootstrap'
 
@@ -50,10 +51,14 @@ const AddProduct = () => {
     let id = Date.now().toString()
     
     let temp = Orders.orderList;
+    // temp.push({
+    //   supplier,warehouse,invoice,productName,quantity,units,user,id
+    // })
     temp.push({
-      supplier,warehouse,invoice,productName,quantity,units,user,id
+      productName,quantity,units
     })
     setOrders({orderList : temp})
+    console.log(Orders.orderList);
   }
 
   const SubmitOrder = (e) => {
@@ -72,9 +77,33 @@ const AddProduct = () => {
     orderList : []
   })
 
+  const data = [
+    { name: "John", email: "john@gmail.com", age: 12, gender: "Male" },
+    { name: "Bren", email: "bren@gmail.com", age: 24, gender: "Male" },
+    { name: "Marry", email: "marry@gmail.com", age: 18, gender: "Female" },
+    { name: "Shohail", email: "shohail@gmail.com", age: 25, gender: "Male" },
+    { name: "Aseka", email: "aseka@gmail.com", age: 19, gender: "Female" },
+    { name: "Meuko", email: "meuko@gmail.com", age: 12, gender: "Female" },
+  ];
+
+  const columns = [
+    {
+      title: "Stock Name",
+      field: "productName",
+    },
+    {
+      title: "Quantity",
+      field: "quantity",
+    },
+    {
+      title: "Units",
+      field: "units",
+    }
+  ];
+
 	return (
 		<div className="addProduct-section-initial" >
-			<h1 className="page-header" style={{textAlign : "center"}}>Add Product</h1>
+			<h1 className="page-header" style={{textAlign : "center"}}>Add Stock</h1>
 			<form className="addProduct-form" >
 				<div className="input-div" >
         <Input
@@ -100,7 +129,7 @@ const AddProduct = () => {
 						validators={[VALIDATOR_REQUIRE()]}
 						errorText="Please select a Warehouse"
 						onInput={inputHandler}
-            options={["gsfag","asdghsf"]}
+            options={["gsfag","asdgsadgfdghsf"]}
 						class="addProduct-input"
 					/>
           <Input
@@ -128,14 +157,15 @@ const AddProduct = () => {
 						class="addProduct-input"
 					/>
 				</div>
-				<div className="button-div" >
+				{/* <div className="button-div" >
 					<Button color="green" disabled={!formState.isValid} onClick={InitialSubmitHandler} id="AddOrderInfo">
 						Add Info
 					</Button>
-				</div>
+				</div> */}
 			</form>
-      {isInitialFormSubmitted &&
-      <div>
+      {formState.isValid &&
+      <div className='StockShow'>
+        <div>
         <h1 className="page-header" style={{textAlign : "center",marginTop : "20px"}}>Add Product</h1>
         <div style={{display : "block", marginTop : "20px"}}>
           <form className="addProduct-form">
@@ -150,7 +180,7 @@ const AddProduct = () => {
                   validators={[VALIDATOR_REQUIRE()]}
                   errorText="Please select a ProductName"
                   onInput={inputHandler2}
-                  options={["gsfag","asdghsf"]}
+                  options={["gsfag","asdfbdbsdfdghsf"]}
                   class="addProduct-input"
                 />
                 <Input
@@ -180,20 +210,24 @@ const AddProduct = () => {
               </div>
               <div className="button-div">
                 <Button color="green" disabled={!formState2.isValid} onClick={SubmitHandler}>
-                  Add Product
+                  Add Stock
                 </Button>
               </div>
             </form>
-
+            </div>
+            </div>
+            <div>
             <div style={{margin : "auto", marginTop : "20px", textAlign : "center"}}>
-              <h1>Orders</h1>
+              <h1>Stocks</h1>
             </div>
             <div style={{margin : "auto" ,marginBottom : "30px",minHeight : "200px" , maxWidth : "1000px", padding: "10px" , maxHeight : "500px", borderRadius : "20px", boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px", overflowY: "scroll"}}>
+            {/* <MaterialTable title="Stock Details" data={Orders.orderList} columns={columns} /> */}
               {Orders.orderList.length > 0 && 
                 <div>
                   {Orders.orderList.map((order,index) =>{
                     return(
                       <div style={{ boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",padding:"15px", borderRadius :"15px", marginTop : "10px",marginBottom : "10px"}} id={order.id}>
+                        <div className='StockList'>
                         <h1>
                             {order.productName}
                         </h1>
@@ -201,15 +235,16 @@ const AddProduct = () => {
                             Quantity : {order.quantity}
                         </h4>
                         <p>
-                            Invoice : {order.invoice} <br></br>
+                            {/* Invoice : {order.invoice} <br></br> */}
                             Units : {order.units} <br></br>
-                            Supplier : {order.supplier} <br></br>
-                            Warehouse : {order.warehouse} <br></br>
-                            User : {order.user}
+                            {/* Supplier : {order.supplier} <br></br> */}
+                            {/* Warehouse : {order.warehouse} <br></br> */}
+                            {/* User : {order.user} */}
                         </p>
-                        <Button color="red" onClick = {() => {DeleteItem(order.id)}}>
+                        <Button color="red" style={{textAlign:"right"}} onClick = {() => {DeleteItem(order.id)}}>
                                 Delete Product
                         </Button>
+                        </div>
                     </div>
                     )
                   } )}
@@ -218,7 +253,7 @@ const AddProduct = () => {
             </div>
             <div className="button-div">
               <Button color="green">
-                    Add Product
+                    SUBMIT
               </Button>
             </div>
           </div>
