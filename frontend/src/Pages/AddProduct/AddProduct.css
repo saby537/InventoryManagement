@@ -31,16 +31,16 @@
 	justify-content: center;
 }
 
+.StockList{
+	display: grid;
+	grid-template-columns: 5fr 2.25fr 2.25fr 0.5fr;
+}
 @media (min-width : 1024px){
 	
 	.StockShow{
 		display: grid;
 		grid-template-columns: 5fr 5fr;
 	}
-/* 
-	.StockList{
-		display: grid;
-		grid-template-columns: 4fr 2fr 2fr 2fr;
-	} */
+
 }
 

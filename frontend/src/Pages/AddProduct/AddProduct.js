@@ -12,6 +12,7 @@ import {
 	unitOptions,
 } from './productFields';
 import MaterialTable from "material-table";
+import img from '../../img/delete.png'
 
 import { Form } from 'react-bootstrap'
 
@@ -51,12 +52,12 @@ const AddProduct = () => {
     let id = Date.now().toString()
     
     let temp = Orders.orderList;
-    // temp.push({
-    //   supplier,warehouse,invoice,productName,quantity,units,user,id
-    // })
     temp.push({
-      productName,quantity,units
+      supplier,warehouse,invoice,productName,quantity,units,user,id
     })
+    // temp.push({
+    //   productName,quantity,units
+    // })
     setOrders({orderList : temp})
     console.log(Orders.orderList);
   }
@@ -76,30 +77,6 @@ const AddProduct = () => {
   const [Orders, setOrders] = useState({
     orderList : []
   })
-
-  const data = [
-    { name: "John", email: "john@gmail.com", age: 12, gender: "Male" },
-    { name: "Bren", email: "bren@gmail.com", age: 24, gender: "Male" },
-    { name: "Marry", email: "marry@gmail.com", age: 18, gender: "Female" },
-    { name: "Shohail", email: "shohail@gmail.com", age: 25, gender: "Male" },
-    { name: "Aseka", email: "aseka@gmail.com", age: 19, gender: "Female" },
-    { name: "Meuko", email: "meuko@gmail.com", age: 12, gender: "Female" },
-  ];
-
-  const columns = [
-    {
-      title: "Stock Name",
-      field: "productName",
-    },
-    {
-      title: "Quantity",
-      field: "quantity",
-    },
-    {
-      title: "Units",
-      field: "units",
-    }
-  ];
 
 	return (
 		<div className="addProduct-section-initial" >
@@ -223,27 +200,28 @@ const AddProduct = () => {
             <div style={{margin : "auto" ,marginBottom : "30px",minHeight : "200px" , maxWidth : "1000px", padding: "10px" , maxHeight : "500px", borderRadius : "20px", boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px", overflowY: "scroll"}}>
             {/* <MaterialTable title="Stock Details" data={Orders.orderList} columns={columns} /> */}
               {Orders.orderList.length > 0 && 
-                <div>
+                <div style={{ boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",padding:"15px", borderRadius :"15px", marginTop : "10px",marginBottom : "10px"}}>
                   {Orders.orderList.map((order,index) =>{
                     return(
-                      <div style={{ boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",padding:"15px", borderRadius :"15px", marginTop : "10px",marginBottom : "10px"}} id={order.id}>
+                      <div id={order.id} style={{margin:"5px"}}>
                         <div className='StockList'>
-                        <h1>
-                            {order.productName}
-                        </h1>
-                        <h4>
-                            Quantity : {order.quantity}
-                        </h4>
-                        <p>
-                            {/* Invoice : {order.invoice} <br></br> */}
-                            Units : {order.units} <br></br>
-                            {/* Supplier : {order.supplier} <br></br> */}
-                            {/* Warehouse : {order.warehouse} <br></br> */}
-                            {/* User : {order.user} */}
-                        </p>
-                        <Button color="red" style={{textAlign:"right"}} onClick = {() => {DeleteItem(order.id)}}>
-                                Delete Product
-                        </Button>
+                          <p style={{margin : "4px"}}>
+                              {order.productName}
+                          </p>
+                          <p style={{margin : "4px"}}> 
+                              Quantity : {order.quantity}
+                          </p>
+                          <p style={{margin : "4px"}}>
+                              {/* Invoice : {order.invoice} <br></br> */}
+                              Units : {order.units} <br></br>
+                              {/* Supplier : {order.supplier} <br></br> */}
+                              {/* Warehouse : {order.warehouse} <br></br> */}
+                              {/* User : {order.user} */}
+                          </p>
+                          <div style={{display :"flex", flexDirection :"column", justifyContent : "center"}}>
+                            <div color="red" style={{textAlign:"right", backgroundImage : `url(${img})`, width : "30px", height : "32px"}} onClick = {() => {DeleteItem(order.id)}}>
+                          </div>
+                        </div>
                         </div>
                     </div>
                     )
