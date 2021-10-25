@@ -1,43 +1,51 @@
-import React,{ useState , useEffect , useRef} from 'react';
-import { VALIDATOR_REQUIRE,VALIDATOR_NUMBER } from '../../utils/validator.js';
+import React, { useState, useEffect, useRef } from 'react';
+import { VALIDATOR_REQUIRE, VALIDATOR_NUMBER } from '../../utils/validator.js';
 import Button from '../../Components/FormElements/Button';
 import Input from '../../Components/FormElements/Input';
 import { useForm } from '../../Components/hooks/form-hook';
+
+import { connect } from 'react-redux';
+import {
+  addStockStart, emptyError
+} from '../../redux/Product/product.actions';
+import { createStructuredSelector } from 'reselect';
+import { selectError, selectProductLoading } from '../../redux/Product/product.selector';
+
 import './AddProduct.css';
 import {
-	productFields,
+  productFields,
   productDetailsFields,
-	typeOptions,
-	subTypeOptions,
-	unitOptions,
+  typeOptions,
+  subTypeOptions,
+  unitOptions,
 } from './productFields';
 import MaterialTable from "material-table";
 import img from '../../img/delete.png'
 
 import { Form } from 'react-bootstrap'
 
-const AddProduct = () => {
+const AddProduct = ({ addStock, isLoading, error }) => {
 
-	const [formState, inputHandler, setFormData] = useForm(
-		productFields.fields,
-		productFields.isValid
-	);
+  const [formState, inputHandler, setFormData] = useForm(
+    productFields.fields,
+    productFields.isValid
+  );
 
   const [formState2, inputHandler2, setFormData2] = useForm(
-		productDetailsFields.fields,
-		productDetailsFields.isValid
-	);
+    productDetailsFields.fields,
+    productDetailsFields.isValid
+  );
 
   const [isInitialFormSubmitted, setisInitialFormSubmitted] = useState(false)
 
   const InitialSubmitHandler = (e) => {
     e.preventDefault()
     setisInitialFormSubmitted(true)
-  //   document.getElementById("Supplier").setAttribute("disabled","true");;
-  //   document.getElementById("Warehouse").setAttribute("disabled","true");;
-  //   document.getElementById("Invoice").setAttribute("disabled","true");;
-  //   document.getElementById("User").setAttribute("disabled","true");
-  //   // console .log(document.getElementById("AddOrderInfo").innerHTML="Edit Info")
+    //   document.getElementById("Supplier").setAttribute("disabled","true");;
+    //   document.getElementById("Warehouse").setAttribute("disabled","true");;
+    //   document.getElementById("Invoice").setAttribute("disabled","true");;
+    //   document.getElementById("User").setAttribute("disabled","true");
+    //   // console .log(document.getElementById("AddOrderInfo").innerHTML="Edit Info")
   }
 
   const SubmitHandler = (e) => {
@@ -50,195 +58,206 @@ const AddProduct = () => {
     let units = document.getElementById("Units").value;
     let user = document.getElementById("User").value;
     let id = Date.now().toString()
-    
+
     let temp = Orders.orderList;
     temp.push({
-      supplier,warehouse,invoice,productName,quantity,units,user,id
+      supplier, warehouse, invoice, productName, quantity, units, user, id
     })
     // temp.push({
     //   productName,quantity,units
     // })
-    setOrders({orderList : temp})
+    setOrders({ orderList: temp })
     console.log(Orders.orderList);
   }
 
   const SubmitOrder = (e) => {
     e.preventDefault()
+    // Orders.map((order) => {
+    //   const payload = {}
+    //   await addStock(payload)
+    // })
   }
 
   const DeleteItem = (id) => {
     let temp = []
-    for(let i=0;i<Orders.orderList.length;i++){
-      if(Orders.orderList[i].id != id){temp.push(Orders.orderList[i])}
+    for (let i = 0; i < Orders.orderList.length; i++) {
+      if (Orders.orderList[i].id != id) { temp.push(Orders.orderList[i]) }
     }
-    setOrders({orderList : temp})
+    setOrders({ orderList: temp })
   }
 
   const [Orders, setOrders] = useState({
-    orderList : []
+    orderList: []
   })
 
-	return (
-		<div className="addProduct-section-initial" >
-			<h1 className="page-header" style={{textAlign : "center"}}>Add Stock</h1>
-			<form className="addProduct-form" >
-				<div className="input-div" >
-        <Input
-						element="select"
+  return (
+    <div className="addProduct-section-initial" >
+      <h1 className="page-header" style={{ textAlign: "center" }}>Add Stock</h1>
+      <form className="addProduct-form" >
+        <div className="input-div" >
+          <Input
+            element="select"
             type="options"
-						id="Supplier"
+            id="Supplier"
             placeholder="Supplier"
             label="Supplier"
-						initialValue={formState.inputs.Supplier.value}
-						validators={[VALIDATOR_REQUIRE()]}
-						errorText="Please select a supplier"
-						onInput={inputHandler}
-            options={["gsfag","asdghsf"]}
-						class="addProduct-input"
-					/>
+            initialValue={formState.inputs.Supplier.value}
+            validators={[VALIDATOR_REQUIRE()]}
+            errorText="Please select a supplier"
+            onInput={inputHandler}
+            options={["gsfag", "asdghsf"]}
+            class="addProduct-input"
+          />
           <Input
-						element="select"
+            element="select"
             type="options"
-						id="Warehouse"
+            id="Warehouse"
             placeholder="Warehouse"
             label="Warehouse"
-						initialValue={formState.inputs.Warehouse.value}
-						validators={[VALIDATOR_REQUIRE()]}
-						errorText="Please select a Warehouse"
-						onInput={inputHandler}
-            options={["gsfag","asdgsadgfdghsf"]}
-						class="addProduct-input"
-					/>
+            initialValue={formState.inputs.Warehouse.value}
+            validators={[VALIDATOR_REQUIRE()]}
+            errorText="Please select a Warehouse"
+            onInput={inputHandler}
+            options={["gsfag", "asdgsadgfdghsf"]}
+            class="addProduct-input"
+          />
           <Input
-						element="input"
-						type="text"
-						id="Invoice"
+            element="input"
+            type="text"
+            id="Invoice"
             placeholder="Invoice"
-						label="Invoice"
-						initialValue={formState.inputs.Invoice.value}
-						validators={[VALIDATOR_REQUIRE()]}
-						errorText="Please provide Invoice"
-						onInput={inputHandler}
-						class="addProduct-input"
-					/>
+            label="Invoice"
+            initialValue={formState.inputs.Invoice.value}
+            validators={[VALIDATOR_REQUIRE()]}
+            errorText="Please provide Invoice"
+            onInput={inputHandler}
+            class="addProduct-input"
+          />
           <Input
-						element="input"
-						type="text"
-						id="User"
+            element="input"
+            type="text"
+            id="User"
             placeholder="User"
-						label="User"
-						initialValue={formState.inputs.User.value}
-						validators={[VALIDATOR_REQUIRE()]}
-						errorText="Please provide Invoice"
-						onInput={inputHandler}
-						class="addProduct-input"
-					/>
-				</div>
-				{/* <div className="button-div" >
+            label="User"
+            initialValue={formState.inputs.User.value}
+            validators={[VALIDATOR_REQUIRE()]}
+            errorText="Please provide Invoice"
+            onInput={inputHandler}
+            class="addProduct-input"
+          />
+        </div>
+        {/* <div className="button-div" >
 					<Button color="green" disabled={!formState.isValid} onClick={InitialSubmitHandler} id="AddOrderInfo">
 						Add Info
 					</Button>
 				</div> */}
-			</form>
+      </form>
       {formState.isValid &&
-      <div className='StockShow'>
-        <div>
-        <h1 className="page-header" style={{textAlign : "center",marginTop : "20px"}}>Add Product</h1>
-        <div style={{display : "block", marginTop : "20px"}}>
-          <form className="addProduct-form">
-            <div className="input-div">
-              <Input
-                  element="select"
-                  type="options"
-                  id="ProductName"
-                  placeholder="ProductName"
-                  label="ProductName"
-                  initialValue={formState2.inputs.ProductName.value}
-                  validators={[VALIDATOR_REQUIRE()]}
-                  errorText="Please select a ProductName"
-                  onInput={inputHandler2}
-                  options={["gsfag","asdfbdbsdfdghsf"]}
-                  class="addProduct-input"
-                />
-                <Input
-                  element="input"
-                  type="text"
-                  id="Quantity"
-                  placeholder="Quantity"
-                  label="Quantity"
-                  initialValue={formState2.inputs.Quantity.value}
-                  validators={[VALIDATOR_REQUIRE(),VALIDATOR_NUMBER()]}
-                  errorText="Please input a Quantity"
-                  onInput={inputHandler2}
-                  class="addProduct-input"
-                />
-                <Input
-                  element="input"
-                  type="text"
-                  id="Units"
-                  placeholder="Units"
-                  label="Units"
-                  initialValue={formState2.inputs.Units.value}
-                  validators={[VALIDATOR_REQUIRE()]}
-                  errorText="Please provide Units"
-                  onInput={inputHandler2}
-                  class="addProduct-input"
-                />
-              </div>
-              <div className="button-div">
-                <Button color="green" disabled={!formState2.isValid} onClick={SubmitHandler}>
-                  Add Stock
-                </Button>
-              </div>
-            </form>
+        <div className='StockShow'>
+          <div>
+            <h1 className="page-header" style={{ textAlign: "center", marginTop: "20px" }}>Add Product</h1>
+            <div style={{ display: "block", marginTop: "20px" }}>
+              <form className="addProduct-form">
+                <div className="input-div">
+                  <Input
+                    element="select"
+                    type="options"
+                    id="ProductName"
+                    placeholder="ProductName"
+                    label="ProductName"
+                    initialValue={formState2.inputs.ProductName.value}
+                    validators={[VALIDATOR_REQUIRE()]}
+                    errorText="Please select a ProductName"
+                    onInput={inputHandler2}
+                    options={["gsfag", "asdfbdbsdfdghsf"]}
+                    class="addProduct-input"
+                  />
+                  <Input
+                    element="input"
+                    type="text"
+                    id="Quantity"
+                    placeholder="Quantity"
+                    label="Quantity"
+                    initialValue={formState2.inputs.Quantity.value}
+                    validators={[VALIDATOR_REQUIRE(), VALIDATOR_NUMBER()]}
+                    errorText="Please input a Quantity"
+                    onInput={inputHandler2}
+                    class="addProduct-input"
+                  />
+                  <Input
+                    element="input"
+                    type="text"
+                    id="Units"
+                    placeholder="Units"
+                    label="Units"
+                    initialValue={formState2.inputs.Units.value}
+                    validators={[VALIDATOR_REQUIRE()]}
+                    errorText="Please provide Units"
+                    onInput={inputHandler2}
+                    class="addProduct-input"
+                  />
+                </div>
+                <div className="button-div">
+                  <Button color="green" disabled={!formState2.isValid} onClick={SubmitHandler}>
+                    Add Stock
+                  </Button>
+                </div>
+              </form>
             </div>
-            </div>
-            <div>
-            <div style={{margin : "auto", marginTop : "20px", textAlign : "center"}}>
+          </div>
+          <div>
+            <div style={{ margin: "auto", marginTop: "20px", textAlign: "center" }}>
               <h1>Stocks</h1>
             </div>
-            <div style={{margin : "auto" ,marginBottom : "30px",minHeight : "200px" , maxWidth : "1000px", padding: "10px" , maxHeight : "500px", borderRadius : "20px", boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px", overflowY: "scroll"}}>
-            {/* <MaterialTable title="Stock Details" data={Orders.orderList} columns={columns} /> */}
-              {Orders.orderList.length > 0 && 
-                <div style={{ boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",padding:"15px", borderRadius :"15px", marginTop : "10px",marginBottom : "10px"}}>
-                  {Orders.orderList.map((order,index) =>{
-                    return(
-                      <div id={order.id} style={{margin:"5px"}}>
+            <div style={{ margin: "auto", marginBottom: "30px", minHeight: "200px", maxWidth: "1000px", padding: "10px", maxHeight: "500px", borderRadius: "20px", boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px", overflowY: "scroll" }}>
+              {/* <MaterialTable title="Stock Details" data={Orders.orderList} columns={columns} /> */}
+              {Orders.orderList.length > 0 &&
+                <div style={{ boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px", padding: "15px", borderRadius: "15px", marginTop: "10px", marginBottom: "10px" }}>
+                  {Orders.orderList.map((order, index) => {
+                    return (
+                      <div id={order.id} style={{ margin: "5px" }}>
                         <div className='StockList'>
-                          <p style={{margin : "4px"}}>
-                              {order.productName}
+                          <p style={{ margin: "4px" }}>
+                            {order.productName}
                           </p>
-                          <p style={{margin : "4px"}}> 
-                              Quantity : {order.quantity}
+                          <p style={{ margin: "4px" }}>
+                            Quantity : {order.quantity}
                           </p>
-                          <p style={{margin : "4px"}}>
-                              {/* Invoice : {order.invoice} <br></br> */}
-                              Units : {order.units} <br></br>
-                              {/* Supplier : {order.supplier} <br></br> */}
-                              {/* Warehouse : {order.warehouse} <br></br> */}
-                              {/* User : {order.user} */}
+                          <p style={{ margin: "4px" }}>
+                            {/* Invoice : {order.invoice} <br></br> */}
+                            Units : {order.units} <br></br>
+                            {/* Supplier : {order.supplier} <br></br> */}
+                            {/* Warehouse : {order.warehouse} <br></br> */}
+                            {/* User : {order.user} */}
                           </p>
-                          <div style={{display :"flex", flexDirection :"column", justifyContent : "center"}}>
-                            <div color="red" style={{textAlign:"right", backgroundImage : `url(${img})`, width : "30px", height : "32px"}} onClick = {() => {DeleteItem(order.id)}}>
+                          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                            <div color="red" style={{ textAlign: "right", backgroundImage: `url(${img})`, width: "30px", height: "32px" }} onClick={() => { DeleteItem(order.id) }}>
+                            </div>
                           </div>
                         </div>
-                        </div>
-                    </div>
+                      </div>
                     )
-                  } )}
+                  })}
                 </div>
               }
             </div>
             <div className="button-div">
               <Button color="green">
-                    SUBMIT
+                SUBMIT
               </Button>
             </div>
           </div>
         </div>
       }
-		</div>
-	);
+    </div>
+  );
 };
 
-export default AddProduct;
+const mapDispatchToProps = (dispatch) => ({
+  addStock: (stock) => dispatch(addStockStart(stock)),
+});
+const mapStateToProps = createStructuredSelector({
+  isLoading: selectProductLoading,
+  error: selectError,
+});
+export default connect(mapStateToProps, mapDispatchToProps)(AddProduct);
