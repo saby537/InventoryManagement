@@ -53,18 +53,7 @@ router.post("/",async (request : AddStockPost,response : any) =>  {
         //         newAddStock.save(); 
         //     }
         
-        await AddStock.create([{
-            Quantity : request.body.Quantity,
-            Unit : request.body.Unit,
-            ProductName : request.body.ProductName,
-            Supplier : request.body.Supplier,
-            Warehouse : request.body.Warehouse,
-            User : request.body.User,
-            Invoice : request.body.Invoice
-        }],{
-            session : session
-        })
-        await Item.updateOne({
+        await Item.findOneAndUpdate({
             Name : request.body.Name,
             Unit : request.body.Unit,
             Type : request.body.Type,
@@ -73,7 +62,41 @@ router.post("/",async (request : AddStockPost,response : any) =>  {
             $inc : {
                 Quantity : request.body.Quantity
             }
-        }).session(session);
+        },{useFindAndModify: false}).session(session).then( async function(res : any) {
+            if(!res){
+                await Item.create({
+                    Name : request.body.Name,
+                    Unit : request.body.Unit,
+                    Type : request.body.Type,
+                    SubType : request.body.SubType,
+                    Quantity : request.body.Quantity
+                }).then(async function(res : any)  {
+                    await AddStock.create([{
+                        Quantity : request.body.Quantity,
+                        Unit : request.body.Unit,
+                        ProductName : res._id,
+                        Supplier : request.body.Supplier,
+                        Warehouse : request.body.Warehouse,
+                        User : request.body.User,
+                        Invoice : request.body.Invoice
+                    }],{
+                        session : session
+                    })
+                })
+            }else{
+                await AddStock.create([{
+                    Quantity : request.body.Quantity,
+                    Unit : request.body.Unit,
+                    ProductName : res._id,
+                    Supplier : request.body.Supplier,
+                    Warehouse : request.body.Warehouse,
+                    User : request.body.User,
+                    Invoice : request.body.Invoice
+                }],{
+                    session : session
+                })
+            }
+        });
         await session.commitTransaction(); 
         session.endSession();
         response.send("Item and Stock updated")
