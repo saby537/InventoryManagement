@@ -15,7 +15,7 @@ function App() {
 	let LoggedInRoute = () => (
 		<Switch>
 			<Route exact path="/warehouses" component={WareHouseList} />
-			<Route exact path="/addProduct" component={AddProduct} />
+			<Route exact path="/addStock" component={AddProduct} />
 			<Route exact path="/addWarehouse" component={AddWarehouse} />
 			<Route exact path="/addEnterprise" component={AddEnterprise} />
 			<Redirect to="/warehouses" />

@@ -3,14 +3,6 @@ import { VALIDATOR_REQUIRE, VALIDATOR_NUMBER } from '../../utils/validator.js';
 import Button from '../../Components/FormElements/Button';
 import Input from '../../Components/FormElements/Input';
 import { useForm } from '../../Components/hooks/form-hook';
-
-import { connect } from 'react-redux';
-import {
-  addStockStart, emptyError
-} from '../../redux/Product/product.actions';
-import { createStructuredSelector } from 'reselect';
-import { selectError, selectProductLoading } from '../../redux/Product/product.selector';
-
 import './AddProduct.css';
 import {
   productFields,
@@ -24,7 +16,7 @@ import img from '../../img/delete.png'
 
 import { Form } from 'react-bootstrap'
 
-const AddProduct = ({ addStock, isLoading, error }) => {
+const AddProduct = () => {
 
   const [formState, inputHandler, setFormData] = useForm(
     productFields.fields,
@@ -72,10 +64,6 @@ const AddProduct = ({ addStock, isLoading, error }) => {
 
   const SubmitOrder = (e) => {
     e.preventDefault()
-    // Orders.map((order) => {
-    //   const payload = {}
-    //   await addStock(payload)
-    // })
   }
 
   const DeleteItem = (id) => {
@@ -158,7 +146,7 @@ const AddProduct = ({ addStock, isLoading, error }) => {
             <h1 className="page-header" style={{ textAlign: "center", marginTop: "20px" }}>Add Product</h1>
             <div style={{ display: "block", marginTop: "20px" }}>
               <form className="addProduct-form">
-                <div className="input-div">
+                <div className="input-div2">
                   <Input
                     element="select"
                     type="options"
@@ -209,7 +197,7 @@ const AddProduct = ({ addStock, isLoading, error }) => {
             <div style={{ margin: "auto", marginTop: "20px", textAlign: "center" }}>
               <h1>Stocks</h1>
             </div>
-            <div style={{ margin: "auto", marginBottom: "30px", minHeight: "200px", maxWidth: "1000px", padding: "10px", maxHeight: "500px", borderRadius: "20px", boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px", overflowY: "scroll" }}>
+            <div style={{ margin: "auto", marginBottom: "85px", minHeight: "350px", maxWidth: "1000px", padding: "10px", maxHeight: "250px", borderRadius: "20px", boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px", overflowY: "scroll" }}>
               {/* <MaterialTable title="Stock Details" data={Orders.orderList} columns={columns} /> */}
               {Orders.orderList.length > 0 &&
                 <div style={{ boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px", padding: "15px", borderRadius: "15px", marginTop: "10px", marginBottom: "10px" }}>
@@ -253,11 +241,4 @@ const AddProduct = ({ addStock, isLoading, error }) => {
   );
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  addStock: (stock) => dispatch(addStockStart(stock)),
-});
-const mapStateToProps = createStructuredSelector({
-  isLoading: selectProductLoading,
-  error: selectError,
-});
-export default connect(mapStateToProps, mapDispatchToProps)(AddProduct);
+export default AddProduct;
