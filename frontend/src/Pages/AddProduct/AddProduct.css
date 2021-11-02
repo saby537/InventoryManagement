@@ -21,6 +21,15 @@
 	flex-wrap: wrap;
 }
 
+.input-div2 {
+	display: flex;
+	padding: 5px;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
 .addProduct-input {
 	max-width: 400px;
 }
@@ -29,6 +38,7 @@
 	margin-top: 20px;
 	display: flex;
 	justify-content: center;
+	margin-bottom: 20px;
 }
 
 .StockList{

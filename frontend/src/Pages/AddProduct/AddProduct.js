@@ -146,7 +146,7 @@ const AddProduct = () => {
         <h1 className="page-header" style={{textAlign : "center",marginTop : "20px"}}>Add Product</h1>
         <div style={{display : "block", marginTop : "20px"}}>
           <form className="addProduct-form">
-            <div className="input-div">
+            <div className="input-div2">
               <Input
                   element="select"
                   type="options"
@@ -197,7 +197,7 @@ const AddProduct = () => {
             <div style={{margin : "auto", marginTop : "20px", textAlign : "center"}}>
               <h1>Stocks</h1>
             </div>
-            <div style={{margin : "auto" ,marginBottom : "30px",minHeight : "200px" , maxWidth : "1000px", padding: "10px" , maxHeight : "500px", borderRadius : "20px", boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px", overflowY: "scroll"}}>
+            <div style={{margin : "auto" ,marginBottom : "85px",minHeight : "350px" , maxWidth : "1000px", padding: "10px" , maxHeight : "250px", borderRadius : "20px", boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px", overflowY: "scroll"}}>
             {/* <MaterialTable title="Stock Details" data={Orders.orderList} columns={columns} /> */}
               {Orders.orderList.length > 0 && 
                 <div style={{ boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",padding:"15px", borderRadius :"15px", marginTop : "10px",marginBottom : "10px"}}>

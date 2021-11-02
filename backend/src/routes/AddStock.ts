@@ -70,7 +70,7 @@ router.post("/",async (request : AddStockPost,response : any) =>  {
                     Type : request.body.Type,
                     SubType : request.body.SubType,
                     Quantity : request.body.Quantity
-                }).then(async function(res : any)  {
+                }).then(async function(res : any){
                     await AddStock.create([{
                         Quantity : request.body.Quantity,
                         Unit : request.body.Unit,
