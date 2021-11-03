@@ -1,6 +1,10 @@
 import mongoose from 'mongoose'
 
 const WarehouseSchema = new mongoose.Schema({
+    Name : {
+        type : String,
+        required : true
+    },
     Address : {
         type : String,
         required : true

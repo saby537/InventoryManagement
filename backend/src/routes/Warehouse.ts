@@ -23,7 +23,9 @@ router.post("/",async (request : WarehousesPost,response : any) =>  {
         let validationFail = mewWarehouse.validateSync()
         if(!validationFail){
             mewWarehouse.save();
-            response.send("New warehouse added")     
+            response.status(200).send({
+                message : "New warehouse added"
+            })     
         }else{response.send(validationFail)}   
     } catch (error) {
         response.status(500).send("Some error happened")

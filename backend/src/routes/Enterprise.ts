@@ -24,22 +24,43 @@ interface EnterpriseGetByEmail {
 }
 
 router.post("/",async (request : EnterprisePost,response : any) =>  {
+    // console.log(request.body);
     try {
         request.body.Orders = [];
         let newEnterprise = new Enterprise(request.body);
         let validationFail = newEnterprise.validateSync()
         if(!validationFail){
             newEnterprise.save();
-            response.send("New enterprise added")     
-        }else{response.send(validationFail)}   
+            response.status(200).send({
+                message : "New enterprise added"
+            })     
+        }else{response.status(400).send(validationFail)}   
     } catch (error) {
-        response.status(500).send(error)
+        response.status(400).send(error)
     }
 })
 
 router.get("/",async (request : any,response : any) => {
     try {
         let finder = await Enterprise.find().populate("Orders");
+        response.send(finder);
+    } catch (error) {
+        response.status(500).send(error)
+    }
+})
+
+router.get("/supplier/",async (request : any,response : any) => {
+    try {
+        let finder = await Enterprise.find({Type : "Supplier"}).populate("Orders");
+        response.send(finder);
+    } catch (error) {
+        response.status(500).send(error)
+    }
+})
+
+router.get("/buyer/",async (request : any,response : any) => {
+    try {
+        let finder = await Enterprise.find({Type : "Buyer"}).populate("Orders");
         response.send(finder);
     } catch (error) {
         response.status(500).send(error)
