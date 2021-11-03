@@ -11,13 +11,15 @@
 .addProduct-form {
 	display: flex;
 	flex-direction: column;
+	padding-left: 1.5%;
+	padding-right: 1.5%;
 	/* align-items: center; */
 }
 .input-div {
 	display: flex;
-	padding: 5px;
+	/* padding: 5px; */
 	flex-direction: row;
-	justify-content: space-evenly;
+	justify-content: space-between;
 	flex-wrap: wrap;
 }
 
@@ -32,6 +34,8 @@
 
 .addProduct-input {
 	max-width: 400px;
+	padding-left: 0px;
+	padding-right: 0px;
 }
 
 .button-div {

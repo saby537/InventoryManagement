@@ -6,11 +6,28 @@ import { useForm } from '../../Components/hooks/form-hook';
 import { warehouseFields } from './warehouseFields';
 import './AddWarehouse.css';
 
-const AddWarehouse = () => {
+
+import { connect } from 'react-redux';
+
+import { createStructuredSelector } from 'reselect';
+import { selectError, selectShopLoading } from '../../redux/Shop/shop.selector';
+import { addWarehouseStart, emptyError } from '../../redux/Shop/shop.actions.js';
+
+const AddWarehouse = ({addWarehouse,clearError,isLoading,error}) => {
 	const [formState, inputHandler, setFormData] = useForm(
 		warehouseFields.fields,
 		warehouseFields.isValid
 	);
+
+	const submitHandler = async (event) => {
+		event.preventDefault();
+		const payload = {
+			Name : formState.inputs.name.value,
+			Address : formState.inputs.address.value,
+			City : formState.inputs.city.value,
+		}
+		await addWarehouse(payload);
+	}
 	return (
 		<div className="addWarehouse-section">
 			<p className="page-header">Add Warehouse</p>
@@ -51,7 +68,7 @@ const AddWarehouse = () => {
 					/>
 				</div>
 				<div className="button-div">
-					<Button color="blue" disabled={!formState.isValid}>
+					<Button color="blue" disabled={!formState.isValid} onClick={submitHandler}>
 						Create Warehouse
 					</Button>
 				</div>
@@ -60,4 +77,15 @@ const AddWarehouse = () => {
 	);
 };
 
-export default AddWarehouse;
+// export default AddWarehouse;
+
+const mapDispatchToProps = (dispatch) => ({
+	addWarehouse: (warehouse) => dispatch(addWarehouseStart(warehouse)),
+	clearError: () => dispatch(emptyError()),
+	
+});
+const mapStateToProps = createStructuredSelector({
+	isLoading: selectShopLoading,
+	error: selectError,
+});
+export default connect(mapStateToProps, mapDispatchToProps)(AddWarehouse);

@@ -10,11 +10,35 @@ import { useForm } from '../../Components/hooks/form-hook';
 import './AddEnterprise.css';
 import { enterpriseFields, typeOptions } from './enterpriseFields';
 
-const AddEnterprise = () => {
+import { connect } from 'react-redux';
+
+import { createStructuredSelector } from 'reselect';
+import { selectError, selectEnterpriseLoading } from '../../redux/Enterprise/enterprise.selector';
+import { addEnterpriseStart, emptyError } from '../../redux/Enterprise/enterprise.actions';
+
+
+const AddEnterprise = ({addEnterprise,clearError,isLoading,error}) => {
 	const [formState, inputHandler, setFormData] = useForm(
 		enterpriseFields.fields,
 		enterpriseFields.isValid
 	);
+
+	const submitHandler = async (event) => {
+		event.preventDefault();
+		const payload = {
+			Name : formState.inputs.name.value,
+			Address : formState.inputs.address.value,
+			PAN : formState.inputs.pan.value,
+			GSTNumber : formState.inputs.gst.value,
+			PINCode : formState.inputs.pincode.value,
+			PhoneNo : formState.inputs.phone.value,
+			EmailID : formState.inputs.email.value,
+			Type : formState.inputs.type.value,
+		}
+		console.log(payload);
+		await addEnterprise(payload);
+	}
+
 	return (
 		<div className="addEnterprise-section">
 			<p className="page-header">Add Enterprise</p>
@@ -112,7 +136,7 @@ const AddEnterprise = () => {
 					/>
 				</div>
 				<div className="button-div">
-					<Button color="#cf0003" disabled={!formState.isValid}>
+					<Button color="#cf0003" disabled={!formState.isValid} onClick={submitHandler}>
 						Create Enterprise
 					</Button>
 				</div>
@@ -121,4 +145,15 @@ const AddEnterprise = () => {
 	);
 };
 
-export default AddEnterprise;
+// export default AddEnterprise;
+
+const mapDispatchToProps = (dispatch) => ({
+	addEnterprise: (enterprise) => dispatch(addEnterpriseStart(enterprise)),
+	clearError: () => dispatch(emptyError()),
+	
+});
+const mapStateToProps = createStructuredSelector({
+	isLoading: selectEnterpriseLoading,
+	error: selectError,
+});
+export default connect(mapStateToProps, mapDispatchToProps)(AddEnterprise);

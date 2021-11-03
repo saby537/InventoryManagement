@@ -16,7 +16,13 @@ import img from '../../img/delete.png'
 
 import { Form } from 'react-bootstrap'
 
-const AddProduct = () => {
+import { connect } from 'react-redux';
+
+import { createStructuredSelector } from 'reselect';
+import { selectError, selectStockLoading } from '../../redux/Stock/stock.selector';
+import { addStockStart, emptyError } from '../../redux/Stock/stock.actions';
+
+const AddProduct = ({addStock,clearError,isLoading,error}) => {
 
   const [formState, inputHandler, setFormData] = useForm(
     productFields.fields,
@@ -29,6 +35,48 @@ const AddProduct = () => {
   );
 
   const [isInitialFormSubmitted, setisInitialFormSubmitted] = useState(false)
+  const [supplier, setsupplier] = useState({
+    data : []
+  })
+  const [warehouse, setwarehouse] = useState({
+    data : []
+  })
+
+  useEffect(() => {
+    if(!supplier.data.length){
+      fetch(`${process.env.REACT_APP_API_URL}/api/enterprise/supplier/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(res => res.json())
+      .then((res) => {
+        let temp = []
+        for(let i = 0; i < res.length; i++){
+          temp.push(res[i].Name)
+        }
+        setsupplier({ data : temp })
+      })
+    }
+    if(!supplier.data.length){
+      fetch(`${process.env.REACT_APP_API_URL}/api/warehouse/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(res => res.json())
+      .then((res) => {
+        let temp = []
+        for(let i = 0; i < res.length; i++){
+          temp.push(res[i].Name)
+        }
+        console.log(res);
+        setwarehouse({ data : temp })
+      })
+    }
+  },[supplier])
 
   const InitialSubmitHandler = (e) => {
     e.preventDefault()
@@ -62,9 +110,21 @@ const AddProduct = () => {
     console.log(Orders.orderList);
   }
 
-  const SubmitOrder = (e) => {
-    e.preventDefault()
-  }
+  const submitHandler = async (event) => {
+		event.preventDefault();
+		const payload = {
+			Name : formState.inputs.name.value,
+			Address : formState.inputs.address.value,
+			PAN : formState.inputs.pan.value,
+			GSTNumber : formState.inputs.gst.value,
+			PINCode : formState.inputs.pincode.value,
+			PhoneNo : formState.inputs.phone.value,
+			EmailID : formState.inputs.email.value,
+			Type : formState.inputs.type.value,
+		}
+		console.log(payload);
+		await addStock(payload);
+	}
 
   const DeleteItem = (id) => {
     let temp = []
@@ -93,7 +153,7 @@ const AddProduct = () => {
             validators={[VALIDATOR_REQUIRE()]}
             errorText="Please select a supplier"
             onInput={inputHandler}
-            options={["gsfag", "asdghsf"]}
+            options={supplier.data}
             class="addProduct-input"
           />
           <Input
@@ -106,7 +166,7 @@ const AddProduct = () => {
             validators={[VALIDATOR_REQUIRE()]}
             errorText="Please select a Warehouse"
             onInput={inputHandler}
-            options={["gsfag", "asdgsadgfdghsf"]}
+            options={warehouse.data}
             class="addProduct-input"
           />
           <Input
@@ -139,7 +199,7 @@ const AddProduct = () => {
 						Add Info
 					</Button>
 				</div> */}
-      </form>
+      
       {formState.isValid &&
         <div className='StockShow'>
           <div>
@@ -229,7 +289,7 @@ const AddProduct = () => {
                 </div>
               }
             </div>
-            <div className="button-div">
+            <div className="button-div" onClick={submitHandler}>
               <Button color="green">
                 SUBMIT
               </Button>
@@ -237,8 +297,20 @@ const AddProduct = () => {
           </div>
         </div>
       }
+      </form>
     </div>
   );
 };
 
-export default AddProduct;
+// export default AddProduct;
+
+const mapDispatchToProps = (dispatch) => ({
+	addStock: (stock) => dispatch(addStockStart(stock)),
+	clearError: () => dispatch(emptyError()),
+	
+});
+const mapStateToProps = createStructuredSelector({
+	isLoading: selectStockLoading,
+	error: selectError,
+});
+export default connect(mapStateToProps, mapDispatchToProps)(AddProduct);
