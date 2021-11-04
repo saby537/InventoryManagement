@@ -1,4 +1,4 @@
-import { takeLatest, takeEvery, call, all, put } from 'redux-saga/effects';
+import { takeLatest, call, all, put } from 'redux-saga/effects';
 import { addStockFailure, addStockSuccess } from './product.actions';
 import productActionTypes from './product.types';
 

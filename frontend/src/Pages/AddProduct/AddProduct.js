@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { VALIDATOR_REQUIRE, VALIDATOR_NUMBER } from '../../utils/validator.js';
 import Button from '../../Components/FormElements/Button';
 import Input from '../../Components/FormElements/Input';
@@ -6,15 +6,10 @@ import { useForm } from '../../Components/hooks/form-hook';
 import './AddProduct.css';
 import {
   productFields,
-  productDetailsFields,
-  typeOptions,
-  subTypeOptions,
-  unitOptions,
+  productDetailsFields
 } from './productFields';
-import MaterialTable from "material-table";
 import img from '../../img/delete.png'
 
-import { Form } from 'react-bootstrap'
 
 import { connect } from 'react-redux';
 
@@ -34,12 +29,29 @@ const AddProduct = ({addStock,clearError,isLoading,error}) => {
     productDetailsFields.isValid
   );
 
-  const [isInitialFormSubmitted, setisInitialFormSubmitted] = useState(false)
+  
+  const [isError, setIsError] = useState('')
   const [supplier, setsupplier] = useState({
     data : []
   })
   const [warehouse, setwarehouse] = useState({
     data : []
+  })
+  const [items, setItems] = useState({
+    data : []
+  })
+  const [userID, setuserID] = useState('')
+  const [Orders, setOrders] = useState({
+    orderList: []
+  })
+  const [ItemList, setItemList] = useState({
+    data: []
+  })
+  const [SupplierList, setSupplierList] = useState({
+    data: []
+  })
+  const [WarehouseList, setWarehouseList] = useState({
+    data: []
   })
 
   useEffect(() => {
@@ -53,12 +65,17 @@ const AddProduct = ({addStock,clearError,isLoading,error}) => {
       .then(res => res.json())
       .then((res) => {
         let temp = []
+        let temp2 = []
         for(let i = 0; i < res.length; i++){
           temp.push(res[i].Name)
+          temp2.push(res[i])
         }
         setsupplier({ data : temp })
+        setSupplierList({ data : temp2 })
       })
     }
+
+
     if(!supplier.data.length){
       fetch(`${process.env.REACT_APP_API_URL}/api/warehouse/`, {
         method: 'GET',
@@ -69,74 +86,113 @@ const AddProduct = ({addStock,clearError,isLoading,error}) => {
       .then(res => res.json())
       .then((res) => {
         let temp = []
+        let temp2 = []
         for(let i = 0; i < res.length; i++){
           temp.push(res[i].Name)
+          temp2.push(res[i])
         }
-        console.log(res);
         setwarehouse({ data : temp })
+        setWarehouseList({ data : temp2 })
       })
     }
-  },[supplier])
 
-  const InitialSubmitHandler = (e) => {
-    e.preventDefault()
-    setisInitialFormSubmitted(true)
-    //   document.getElementById("Supplier").setAttribute("disabled","true");;
-    //   document.getElementById("Warehouse").setAttribute("disabled","true");;
-    //   document.getElementById("Invoice").setAttribute("disabled","true");;
-    //   document.getElementById("User").setAttribute("disabled","true");
-    //   // console .log(document.getElementById("AddOrderInfo").innerHTML="Edit Info")
-  }
+
+    if(formState.isValid){
+      // fetch(`${process.env.REACT_APP_API_URL}/api/enterprise/buyer/search/email/`, {
+      //   method: 'GET',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     "email" : formState.inputs.User.value
+      //   },
+      // })
+      // .then(res => res.json())
+      // .then(async (res) => {
+      //   if(res.length){
+          setIsError('false')
+          setuserID("Sample User ID")
+          if(!items.data.length){
+              fetch(`${process.env.REACT_APP_API_URL}/api/item/`, {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+              })
+              .then(res => res.json())
+              .then((res) => {
+                let temp = []
+                let temp2 = []
+                for(let i = 0; i < res.length; i++){
+                  if(res[i].Quantity > 0){
+                    temp.push(res[i].Name)
+                    temp2.push(res[i])
+                  }
+                }
+                setItems({ data : temp })
+                setItemList({ data : temp2 })
+              })
+          }
+      //   }else{setIsError('true')}
+      // })
+    }
+  })
+
+  useEffect(() => {
+    if(formState2.inputs.ProductName.value){
+      let q = document.forms[1].elements[0].selectedIndex;
+      setFormData2(
+        {
+          ...formState2.inputs,
+          Units: { value: ItemList.data[q-1].Unit, isValid: true },
+        },
+        formState2.isValid
+      );
+    }
+  }, [formState2.inputs.ProductName.value])
+
 
   const SubmitHandler = (e) => {
     e.preventDefault()
-    let supplier = document.getElementById("Supplier").value;
-    let warehouse = document.getElementById("Warehouse").value;
+    let supplier = SupplierList.data[document.getElementById("Supplier").selectedIndex-1]._id;
+    let warehouse = WarehouseList.data[document.getElementById("Warehouse").selectedIndex-1]._id;
     let invoice = document.getElementById("Invoice").value;
     let productName = document.getElementById("ProductName").value;
     let quantity = document.getElementById("Quantity").value;
     let units = document.getElementById("Units").value;
     let user = document.getElementById("User").value;
+    // let user = userID;
     let id = Date.now().toString()
 
     let temp = Orders.orderList;
     temp.push({
       supplier, warehouse, invoice, productName, quantity, units, user, id
     })
-    // temp.push({
-    //   productName,quantity,units
-    // })
     setOrders({ orderList: temp })
-    console.log(Orders.orderList);
   }
 
-  const submitHandler = async (event) => {
+  const SubmitOrder = async (event) => {
 		event.preventDefault();
-		const payload = {
-			Name : formState.inputs.name.value,
-			Address : formState.inputs.address.value,
-			PAN : formState.inputs.pan.value,
-			GSTNumber : formState.inputs.gst.value,
-			PINCode : formState.inputs.pincode.value,
-			PhoneNo : formState.inputs.phone.value,
-			EmailID : formState.inputs.email.value,
-			Type : formState.inputs.type.value,
-		}
-		console.log(payload);
-		await addStock(payload);
+    Orders.orderList.forEach(async (order) => {
+      const payload = {
+      	ProductName : order.productName,
+        Unit : order.units,
+        Quantity : order.quantity,
+        Supplier : order.supplier,
+        Warehouse : order.warehouse,
+        Invoice : order.invoice,
+        User : order.user
+      }
+      await addStock(payload);
+      console.log(payload);
+    })
 	}
 
   const DeleteItem = (id) => {
     let temp = []
     for (let i = 0; i < Orders.orderList.length; i++) {
-      if (Orders.orderList[i].id != id) { temp.push(Orders.orderList[i]) }
+      if (Orders.orderList[i].id !== id) { temp.push(Orders.orderList[i]) }
     }
     setOrders({ orderList: temp })
   }
-
-  const [Orders, setOrders] = useState({
-    orderList: []
-  })
 
   return (
     <div className="addProduct-section-initial" >
@@ -186,7 +242,7 @@ const AddProduct = ({addStock,clearError,isLoading,error}) => {
             type="text"
             id="User"
             placeholder="User"
-            label="User"
+            label="User (Email ID)"
             initialValue={formState.inputs.User.value}
             validators={[VALIDATOR_REQUIRE()]}
             errorText="Please provide Invoice"
@@ -194,13 +250,13 @@ const AddProduct = ({addStock,clearError,isLoading,error}) => {
             class="addProduct-input"
           />
         </div>
-        {/* <div className="button-div" >
-					<Button color="green" disabled={!formState.isValid} onClick={InitialSubmitHandler} id="AddOrderInfo">
-						Add Info
-					</Button>
-				</div> */}
-      
-      {formState.isValid &&
+      </form>
+        {isError === 'true' &&
+          <div>
+            User does not exist
+          </div>
+        }
+      {formState.isValid && isError === 'false' &&
         <div className='StockShow'>
           <div>
             <h1 className="page-header" style={{ textAlign: "center", marginTop: "20px" }}>Add Product</h1>
@@ -213,11 +269,11 @@ const AddProduct = ({addStock,clearError,isLoading,error}) => {
                     id="ProductName"
                     placeholder="ProductName"
                     label="ProductName"
-                    initialValue={formState2.inputs.ProductName.value}
+                    finalValue={formState2.inputs.ProductName.value}
                     validators={[VALIDATOR_REQUIRE()]}
                     errorText="Please select a ProductName"
                     onInput={inputHandler2}
-                    options={["gsfag", "asdfbdbsdfdghsf"]}
+                    options={items.data}
                     class="addProduct-input"
                   />
                   <Input
@@ -226,7 +282,7 @@ const AddProduct = ({addStock,clearError,isLoading,error}) => {
                     id="Quantity"
                     placeholder="Quantity"
                     label="Quantity"
-                    initialValue={formState2.inputs.Quantity.value}
+                    finalValue={formState2.inputs.Quantity.value}
                     validators={[VALIDATOR_REQUIRE(), VALIDATOR_NUMBER()]}
                     errorText="Please input a Quantity"
                     onInput={inputHandler2}
@@ -238,7 +294,7 @@ const AddProduct = ({addStock,clearError,isLoading,error}) => {
                     id="Units"
                     placeholder="Units"
                     label="Units"
-                    initialValue={formState2.inputs.Units.value}
+                    finalValue={formState2.inputs.Units.value}
                     validators={[VALIDATOR_REQUIRE()]}
                     errorText="Please provide Units"
                     onInput={inputHandler2}
@@ -257,13 +313,13 @@ const AddProduct = ({addStock,clearError,isLoading,error}) => {
             <div style={{ margin: "auto", marginTop: "20px", textAlign: "center" }}>
               <h1>Stocks</h1>
             </div>
-            <div style={{ margin: "auto", marginBottom: "85px", minHeight: "350px", maxWidth: "1000px", padding: "10px", maxHeight: "250px", borderRadius: "20px", boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px", overflowY: "scroll" }}>
+            <div style={{ margin: "auto", marginBottom: "85px", minHeight: "347px", maxWidth: "1000px", padding: "10px", maxHeight: "250px", borderRadius: "20px", boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px", overflowY: "auto" }}>
               {/* <MaterialTable title="Stock Details" data={Orders.orderList} columns={columns} /> */}
               {Orders.orderList.length > 0 &&
-                <div style={{ boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px", padding: "15px", borderRadius: "15px", marginTop: "10px", marginBottom: "10px" }}>
+                <div style={{ padding: "15px", borderRadius: "15px", marginTop: "10px", marginBottom: "10px" }}>
                   {Orders.orderList.map((order, index) => {
                     return (
-                      <div id={order.id} style={{ margin: "5px" }}>
+                      <div id={order.id} style={{ margin: "5px" }} key={`AddProduct_${index}`}>
                         <div className='StockList'>
                           <p style={{ margin: "4px" }}>
                             {order.productName}
@@ -289,7 +345,7 @@ const AddProduct = ({addStock,clearError,isLoading,error}) => {
                 </div>
               }
             </div>
-            <div className="button-div" onClick={submitHandler}>
+            <div className="button-div" onClick={SubmitOrder}>
               <Button color="green">
                 SUBMIT
               </Button>
@@ -297,7 +353,7 @@ const AddProduct = ({addStock,clearError,isLoading,error}) => {
           </div>
         </div>
       }
-      </form>
+      
     </div>
   );
 };

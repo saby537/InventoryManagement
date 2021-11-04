@@ -1,8 +1,8 @@
 import stockActionTypes from './stock.types';
 
-export const addStockStart = (warehouse) => ({
+export const addStockStart = (stock) => ({
   type: stockActionTypes.ADD_STOCK_START,
-  payload: warehouse,
+  payload: stock,
 });
 export const addStockSuccess = () => ({
   type: stockActionTypes.ADD_STOCK_SUCCESS,

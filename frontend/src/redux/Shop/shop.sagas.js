@@ -1,8 +1,9 @@
-import { takeLatest, takeEvery, call, all, put } from 'redux-saga/effects';
+import { takeLatest, call, all, put } from 'redux-saga/effects';
 import { addWarehouseFailure, addWarehouseSuccess } from './shop.actions';
 import shopActionTypes from './shop.types';
 
-export function* addWarehouse({ payload }) {
+export function* addShop({ payload }) {
+  console.log("HI");
   const httpAbortCtrl = new AbortController();
   try {
     const res = yield fetch(`${process.env.REACT_APP_API_URL}/api/warehouse/`, {
@@ -26,11 +27,11 @@ export function* addWarehouse({ payload }) {
   setTimeout(() => httpAbortCtrl.abort(), 5000);
 }
 
-export function* onAddWarehouse() {
-  yield takeLatest(shopActionTypes.ADD_WAREHOUSE_START, addWarehouse);
+export function* onAddShop() {
+  yield takeLatest(shopActionTypes.ADD_WAREHOUSE_START, addShop);
 }
 
 
 export function* shopSagas() {
-  yield all([call(onAddWarehouse)]);
+  yield all([call(onAddShop)]);
 }

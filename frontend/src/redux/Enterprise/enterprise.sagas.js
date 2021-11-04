@@ -1,4 +1,4 @@
-import { takeLatest, takeEvery, call, all, put } from 'redux-saga/effects';
+import { takeLatest, call, all, put } from 'redux-saga/effects';
 import { addEnterpriseFailure, addEnterpriseSuccess } from './enterprise.actions';
 import enterpriseActionTypes from './enterprise.types';
 

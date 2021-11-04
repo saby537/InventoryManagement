@@ -1,9 +1,10 @@
-import { takeLatest, takeEvery, call, all, put } from 'redux-saga/effects';
+import { takeLatest, call, all, put } from 'redux-saga/effects';
 import { addStockFailure, addStockSuccess } from './stock.actions';
 import stockActionTypes from './stock.types';
 
 export function* addStock({ payload }) {
   const httpAbortCtrl = new AbortController();
+  console.log(payload);
   try {
     const res = yield fetch(`${process.env.REACT_APP_API_URL}/api/addStock/`, {
       method: 'POST',
@@ -27,7 +28,7 @@ export function* addStock({ payload }) {
 }
 
 export function* onAddStock() {
-  yield takeLatest(stockActionTypes.ADD_WAREHOUSE_START, addStock);
+  yield takeLatest(stockActionTypes.ADD_STOCK_START, addStock);
 }
 
 

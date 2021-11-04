@@ -67,6 +67,42 @@ router.get("/buyer/",async (request : any,response : any) => {
     }
 })
 
+router.get("/contractor/",async (request : any,response : any) => {
+    try {
+        let finder = await Enterprise.find({Type : "Buyer"}).populate("Orders");
+        response.send(finder);
+    } catch (error) {
+        response.status(500).send(error)
+    }
+})
+
+router.get("/supplier/search/email/",async (request : any,response : any) => {
+    try {
+        let finder = await Enterprise.find({Type : "Supplier",EmailID : request.headers.email}).populate("Orders");
+        response.send(finder);
+    } catch (error) {
+        response.status(500).send(error)
+    }
+})
+
+router.get("/buyer/search/email/",async (request : any,response : any) => {
+    try {
+        let finder = await Enterprise.find({Type : "Buyer",EmailID : request.headers.email}).populate("Orders");
+        response.send(finder);
+    } catch (error) {
+        response.status(500).send(error)
+    }
+})
+
+router.get("/contractor/search/email/",async (request : any,response : any) => {
+    try {
+        let finder = await Enterprise.find({Type : "Buyer",EmailID : request.headers.email}).populate("Orders");
+        response.send(finder);
+    } catch (error) {
+        response.status(500).send(error)
+    }
+})
+
 router.get("/email/",async (request : EnterpriseGetByEmail,response : any) => {
     try {
         let finder = await Enterprise.find({
