@@ -10,6 +10,9 @@ import Item from './routes/Items';
 import Warehouse from './routes/Warehouse';
 import AddStock from './routes/AddStock';
 import Order from './routes/Order';
+import User from './routes/User';
+import { errorHandler } from './middlewares/error-handler';
+import { NotFoundError } from './errors/not-found-error';
 
 const router=express.Router();
 const app=express();
@@ -26,9 +29,14 @@ app.use("/api/item/",Item);
 app.use("/api/warehouse/",Warehouse);
 app.use("/api/addStock/",AddStock);
 app.use("/api/order/",Order);
-// app.use("/api/approveRequest/",ApproveRequest);
+app.use("/api/user/",User);
 
 /**-------- Paths ------------------- */
+
+app.all('*', async () => {
+	throw new NotFoundError();
+});
+app.use(errorHandler);
 
 mongoose.connect(process.env.MONGO_CONNECTION_URL!,  // connecting mongoose to mongoDb 
 {useNewUrlParser: true,useUnifiedTopology: true}).then(()=> console.log("Connection Established"));

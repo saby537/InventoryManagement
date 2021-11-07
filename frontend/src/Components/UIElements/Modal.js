@@ -6,7 +6,7 @@ import './Modal.css';
 
 const ModalOverlay = (props) => {
 	const content = (
-		<div className={`modal ${props.className}`} style={props.style}>
+		<div className={`custom_modal ${props.className}`} style={props.style}>
 			<header className={`modal__header ${props.headerClass}`}>
 				<h3 className="modal__header__content">{props.header}</h3>
 			</header>
@@ -24,6 +24,7 @@ const ModalOverlay = (props) => {
 			</form>
 		</div>
 	);
+	console.log('modal');
 	return ReactDOM.createPortal(content, document.getElementById('modal-hook'));
 };
 
