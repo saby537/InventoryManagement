@@ -6,7 +6,7 @@ import Item from '../models/Item';
 const router=express.Router();
 
 interface AddStockPost {
-    body : {
+    body : Array<{
         ProductName : string,
         Type : string,
         SubType : string,
@@ -16,7 +16,7 @@ interface AddStockPost {
         Warehouse : string,
         Invoice : String,
         User : string
-    }
+    }>
 }
 interface EnterpriseGetByInvoice {
     body : {
@@ -25,36 +25,42 @@ interface EnterpriseGetByInvoice {
 }
 
 router.post("/",async (request : AddStockPost,response : any) =>  { 
-    try {
-        const session = await mongoose.startSession();
-        session.startTransaction()
-        await Item.findOneAndUpdate({
-            Name : request.body.ProductName
-        },{
-            $inc : {
-                Quantity : request.body.Quantity
+        try {
+            const session = await mongoose.startSession();
+            session.startTransaction()
+            for(let i=0;i<request.body.length;i++)
+           { 
+               await Item.findOneAndUpdate({
+                    Name : request.body[i].ProductName
+                },{
+                    $inc : {
+                        Quantity : request.body[i].Quantity
+                    }
+                },{useFindAndModify: false, session : session}).then( async function(res : any) {
+                    
+                        await AddStock.create([{
+                            Quantity : request.body[i].Quantity,
+                            Unit : request.body[i].Unit,
+                            ProductName : res._id,
+                            Supplier : request.body[i].Supplier,
+                            Warehouse : request.body[i].Warehouse,
+                            User : request.body[i].User,
+                            Invoice : request.body[i].Invoice
+                        }],{
+                            session : session
+                        })
+                });
             }
-        },{useFindAndModify: false}).session(session).then( async function(res : any) {
+            await session.commitTransaction(); 
+            session.endSession();
+            response.send({message : "Item and Stock updated"})
+        } catch (error) {
+            console.log(error);
             
-                await AddStock.create([{
-                    Quantity : request.body.Quantity,
-                    Unit : request.body.Unit,
-                    ProductName : res._id,
-                    Supplier : request.body.Supplier,
-                    Warehouse : request.body.Warehouse,
-                    User : request.body.User,
-                    Invoice : request.body.Invoice
-                }],{
-                    session : session
-                })
-        });
-        await session.commitTransaction(); 
-        session.endSession();
-        response.send("Item and Stock updated")
-    } catch (error) {
-        response.status(500).send({"Error" : error})
+            response.status(500).send({"Error" : error})
+        }
     }
-})
+)
 
 router.get("/",async (request : any,response : any) =>  {
     try {

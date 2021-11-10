@@ -136,7 +136,7 @@ const AddEnterprise = ({addEnterprise,clearError,isLoading,error}) => {
 					/>
 				</div>
 				<div className="button-div">
-					<Button color="#cf0003" disabled={!formState.isValid} onClick={submitHandler}>
+					<Button disabled={!formState.isValid} onClick={submitHandler}>
 						Create Enterprise
 					</Button>
 				</div>

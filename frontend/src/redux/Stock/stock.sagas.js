@@ -4,7 +4,6 @@ import stockActionTypes from './stock.types';
 
 export function* addStock({ payload }) {
   const httpAbortCtrl = new AbortController();
-  console.log(payload);
   try {
     const res = yield fetch(`${process.env.REACT_APP_API_URL}/api/addStock/`, {
       method: 'POST',

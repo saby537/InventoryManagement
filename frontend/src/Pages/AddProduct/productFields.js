@@ -16,10 +16,10 @@ const productFields = {
 			value: '',
 			isValid: false,
 		},
-		User: {
-			value: '',
-			isValid: false
-		}
+		// User: {
+		// 	value: '',
+		// 	isValid: false
+		// }
 	},
 	isValid: false,
 };

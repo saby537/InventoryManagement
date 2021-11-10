@@ -13,7 +13,7 @@ const Button = (props) => {
 	if (props.href) {
 		return (
 			<a
-				className={`button button--${props.size || 'default'} ${
+				className={`button-custom button--${props.size || 'default'} ${
 					props.inverse && 'button--inverse'
 				} ${props.danger && 'button--danger'}`}
 				href={props.href}
@@ -31,7 +31,7 @@ const Button = (props) => {
 					backgroundColor: `${props.color ? props.color : '#ff0055'}`,
 					borderColor: `${props.color ? props.color : '#ff0055'}`,
 				}}
-				className={`button button--${props.size || 'default'} ${
+				className={`button-custom button--${props.size || 'default'} ${
 					props.inverse && 'button--inverse'
 				} ${props.danger && 'button--danger'}`}
 			>
@@ -44,16 +44,18 @@ const Button = (props) => {
 		<button
 			style={{
 				backgroundColor: `${
-					props.color && !props.disabled ? props.color : defaultColor
+					// props.color && !props.disabled ? props.color : defaultColor
+					props.color ? props.color : defaultColor
 				}`,
 				borderColor: `${
 					props.color && !props.disabled ? props.color : defaultColor
-				}`,
+					// props.color ? props.color : defaultColor
+				} !important`,
 				borderRadius : "10px"
 			}}
-			className={`button button--${props.size || 'default'} ${
+			className={`button-custom button--${props.size || 'default'} ${
 				props.inverse && 'button--inverse'
-			} ${props.danger && 'button--danger'} ${props.logOut && 'button-logout'}`}
+			} ${props.danger && 'button--danger'} ${props.logOut && 'button-logout'} ${!props.disabled&& !props.customColor&& "active"}`}
 			type={props.type}
 			onClick={props.onClick}
 			disabled={props.disabled}

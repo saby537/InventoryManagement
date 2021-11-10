@@ -15,9 +15,10 @@ import { connect } from 'react-redux';
 
 import { createStructuredSelector } from 'reselect';
 import { selectError, selectStockLoading } from '../../redux/Stock/stock.selector';
+import { selectUserId } from '../../redux/user/user.selector.js';
 import { addStockStart, emptyError } from '../../redux/Stock/stock.actions';
 
-const AddProduct = ({addStock,clearError,isLoading,error}) => {
+const AddProduct = ({addStock,clearError,userId,isLoading,error}) => {
 
   const [formState, inputHandler, setFormData] = useForm(
     productFields.fields,
@@ -98,41 +99,29 @@ const AddProduct = ({addStock,clearError,isLoading,error}) => {
 
 
     if(formState.isValid){
-      // fetch(`${process.env.REACT_APP_API_URL}/api/enterprise/buyer/search/email/`, {
-      //   method: 'GET',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     "email" : formState.inputs.User.value
-      //   },
-      // })
-      // .then(res => res.json())
-      // .then(async (res) => {
-      //   if(res.length){
-          setIsError('false')
-          setuserID("Sample User ID")
-          if(!items.data.length){
-              fetch(`${process.env.REACT_APP_API_URL}/api/item/`, {
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-              })
-              .then(res => res.json())
-              .then((res) => {
-                let temp = []
-                let temp2 = []
-                for(let i = 0; i < res.length; i++){
-                  if(res[i].Quantity > 0){
-                    temp.push(res[i].Name)
-                    temp2.push(res[i])
-                  }
-                }
-                setItems({ data : temp })
-                setItemList({ data : temp2 })
-              })
-          }
-      //   }else{setIsError('true')}
-      // })
+      setIsError('false')
+      setuserID("Sample User ID")
+      if(!items.data.length){
+          fetch(`${process.env.REACT_APP_API_URL}/api/item/`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+          })
+          .then(res => res.json())
+          .then((res) => {
+            let temp = []
+            let temp2 = []
+            for(let i = 0; i < res.length; i++){
+              if(res[i].Quantity > 0){
+                temp.push(res[i].Name)
+                temp2.push(res[i])
+              }
+            }
+            setItems({ data : temp })
+            setItemList({ data : temp2 })
+          })
+      }
     }
   })
 
@@ -158,8 +147,7 @@ const AddProduct = ({addStock,clearError,isLoading,error}) => {
     let productName = document.getElementById("ProductName").value;
     let quantity = document.getElementById("Quantity").value;
     let units = document.getElementById("Units").value;
-    let user = document.getElementById("User").value;
-    // let user = userID;
+    let user = userId;
     let id = Date.now().toString()
 
     let temp = Orders.orderList;
@@ -171,8 +159,9 @@ const AddProduct = ({addStock,clearError,isLoading,error}) => {
 
   const SubmitOrder = async (event) => {
 		event.preventDefault();
+    let payload = []
     Orders.orderList.forEach(async (order) => {
-      const payload = {
+      const temp = {
       	ProductName : order.productName,
         Unit : order.units,
         Quantity : order.quantity,
@@ -181,9 +170,9 @@ const AddProduct = ({addStock,clearError,isLoading,error}) => {
         Invoice : order.invoice,
         User : order.user
       }
-      await addStock(payload);
-      console.log(payload);
+      payload.push(temp)
     })
+    await addStock(payload);
 	}
 
   const DeleteItem = (id) => {
@@ -198,7 +187,7 @@ const AddProduct = ({addStock,clearError,isLoading,error}) => {
     <div className="addProduct-section-initial" >
       <h1 className="page-header" style={{ textAlign: "center" }}>Add Stock</h1>
       <form className="addProduct-form" >
-        <div className="input-div" >
+        <div className="input-div-stock" >
           <Input
             element="select"
             type="options"
@@ -232,18 +221,6 @@ const AddProduct = ({addStock,clearError,isLoading,error}) => {
             placeholder="Invoice"
             label="Invoice"
             initialValue={formState.inputs.Invoice.value}
-            validators={[VALIDATOR_REQUIRE()]}
-            errorText="Please provide Invoice"
-            onInput={inputHandler}
-            class="addProduct-input"
-          />
-          <Input
-            element="input"
-            type="text"
-            id="User"
-            placeholder="User"
-            label="User (Email ID)"
-            initialValue={formState.inputs.User.value}
             validators={[VALIDATOR_REQUIRE()]}
             errorText="Please provide Invoice"
             onInput={inputHandler}
@@ -328,11 +305,7 @@ const AddProduct = ({addStock,clearError,isLoading,error}) => {
                             Quantity : {order.quantity}
                           </p>
                           <p style={{ margin: "4px" }}>
-                            {/* Invoice : {order.invoice} <br></br> */}
                             Units : {order.units} <br></br>
-                            {/* Supplier : {order.supplier} <br></br> */}
-                            {/* Warehouse : {order.warehouse} <br></br> */}
-                            {/* User : {order.user} */}
                           </p>
                           <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
                             <div color="red" style={{ textAlign: "right", backgroundImage: `url(${img})`, width: "30px", height: "32px" }} onClick={() => { DeleteItem(order.id) }}>
@@ -366,6 +339,7 @@ const mapDispatchToProps = (dispatch) => ({
 	
 });
 const mapStateToProps = createStructuredSelector({
+  userId : selectUserId,
 	isLoading: selectStockLoading,
 	error: selectError,
 });

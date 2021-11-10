@@ -30,7 +30,7 @@ const AddWarehouse = ({addWarehouse,clearError,isLoading,error}) => {
 	}
 	return (
 		<div className="addWarehouse-section">
-			<p className="page-header">Add Warehouse</p>
+			<p className="page-header-warehouse page-header">Add Warehouse</p>
 			<form className="addWarehouse-form">
 				<div className="input-div">
 					<Input
@@ -68,7 +68,7 @@ const AddWarehouse = ({addWarehouse,clearError,isLoading,error}) => {
 					/>
 				</div>
 				<div className="button-div">
-					<Button color="blue" disabled={!formState.isValid} onClick={submitHandler}>
+					<Button  disabled={!formState.isValid} onClick={submitHandler}>
 						Create Warehouse
 					</Button>
 				</div>
